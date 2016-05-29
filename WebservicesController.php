@@ -6,7 +6,7 @@ class WebservicesController extends AppController {
 	var $uses = array('Category','User','Product','Webservice','Cart_detail');
 	var $components = array('RequestHandler');
 	var $helper = ('Session');
-	
+	// before
 # function checks individually if the admin/user's function required login or not.
 	public function beforeFilter() {
 		$this->Auth->allow();		
