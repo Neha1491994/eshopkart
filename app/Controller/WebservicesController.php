@@ -383,6 +383,34 @@ class WebservicesController extends AppController {
 		     }
     }
 	
+		public function clear_cart(){
+		$json_return = array();		
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$user_id = $this->request->data['user_id'];
+			$product_id = $this->request->data['product_id'];
+			if($this->request->data){
+				$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."' AND product_id = '".$product_id."'");
+				$json_return['msg'] = "success";
+			    $json_return['code'] = "1000";
+			   //$json_return['message'] = ER1000;
+			    echo json_encode($json_return);
+			    exit;
+			}else{
+				$json_return['err'] = "invalid request";
+			    $json_return['code'] = "1002";
+			    //$json_return['message'] = ER1002;
+			    echo json_encode($json_return);
+			    exit;
+			}
+			}else{
+				$json_return['err'] = "invalid request";
+			    $json_return['code'] = "1002";
+			    //$json_return['message'] = ER1002;
+			    echo json_encode($json_return);
+			    exit;
+			}
+	}
+	
 	
 }
 
