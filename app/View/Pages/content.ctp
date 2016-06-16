@@ -1,0 +1,1 @@
+<?php echo $pageContent[0]['Page']['content']; ?>
