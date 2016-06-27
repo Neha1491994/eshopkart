@@ -3,6 +3,15 @@ App::uses('AuthComponent', 'Controller/Component');
 
 class User extends AppModel {
 	var $name='User';
+<<<<<<< HEAD
+=======
+	public $hasMany = array(
+        'Order' => array(
+            'className' => 'Order',
+            'foreignKey' => 'user_id'
+        ),
+	);
+>>>>>>> develop
 	public $validate = array(
         'password' => array(
             'rule' => array('minLength', '6'),
@@ -24,9 +33,15 @@ class User extends AppModel {
 			)	
 		),
 		
+<<<<<<< HEAD
         'birthday' => array(
             'rule' => 'date',
             'message' => 'Enter a valid date',
+=======
+        'mobile' => array(
+            'rule' => 'number',
+            'message' => 'Enter a valid number',
+>>>>>>> develop
             'allowEmpty' => true
         )
     );
@@ -47,8 +62,14 @@ class User extends AppModel {
 				)
 			)
 		);
+<<<<<<< HEAD
 
 		if(!empty($email)){
+=======
+        //pr($email);
+		if(!empty($email)){
+			//pr($email);
+>>>>>>> develop
 			if($this->data[$this->alias]['id'] == $email['User']['id']){
 				return true; 
 			}else{
@@ -58,6 +79,24 @@ class User extends AppModel {
 			return true; 
 		}
     }
+<<<<<<< HEAD
+=======
+	
+	public function beforeSave($options = array()) {
+        // hash our password
+        if (isset($this->data[$this->alias]['password'])) {
+            $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+        }
+         
+        // if we get a new password, hash it
+        if (isset($this->data[$this->alias]['password_update']) && !empty($this->data[$this->alias]['password_update'])) {
+            $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password_update']);
+        }
+     
+        // fallback to our parent
+        return parent::beforeSave($options);
+    }
+>>>>>>> develop
 
 
 }

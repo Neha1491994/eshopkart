@@ -2,7 +2,11 @@
 <?php
 
 
+<<<<<<< HEAD
 $cakeDescription = __d('cake_dev', 'eShopkart: Admin');
+=======
+$cakeDescription = __d('cake_dev', 'eShopKart: Admin');
+>>>>>>> develop
 ?>
 <head>
   <meta charset="utf-8">
@@ -14,8 +18,15 @@ $cakeDescription = __d('cake_dev', 'eShopkart: Admin');
   <?php echo $this->Html->css('main') ?>  
 </head>
 <body>
+<<<<<<< HEAD
   <div class="navbar navbar-inverse" role="navigation">
       <div class="navbar-header">
+=======
+  
+ <div class="navbar navbar-inverse" role="navigation">    
+	 
+	  <div class="navbar-header">
+>>>>>>> develop
         <div class="logo"><h1><?php echo $cakeDescription; ?></h1></div>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
           <span class="sr-only">Toggle navigation</span>
@@ -40,6 +51,7 @@ $cakeDescription = __d('cake_dev', 'eShopkart: Admin');
 	<?php echo $this->Html->script('main') ?> 
 	
     <script type="text/javascript">
+<<<<<<< HEAD
     // Line chart
 	/*
     var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
@@ -77,6 +89,9 @@ $cakeDescription = __d('cake_dev', 'eShopkart: Admin');
       });
     };
 	*/
+=======
+    
+>>>>>>> develop
 	jQuery(document).ready(function($) {
 		$('#myTab a').click(function (e) {
 		  e.preventDefault();

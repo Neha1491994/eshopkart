@@ -43,7 +43,18 @@ class PagesController extends AppController {
  *
  * @var array
  */
+<<<<<<< HEAD
 	public $uses = array();
+=======
+	public $uses = array('Page');
+	
+	public function beforeFilter() {
+		$currentController = $this->params['controller'];
+		$currentAction = $this->params['action'];
+	
+			$this->Auth->allow();
+	}	
+>>>>>>> develop
 
 /**
  * Displays a view
@@ -72,4 +83,14 @@ class PagesController extends AppController {
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
 	}
+<<<<<<< HEAD
+=======
+	
+	public function content($pageId = 1) {
+		$this->layout = "";
+		//$pageContent = $this->Page->find("first", array("Page.id" => $pageId));
+		$pageContent = $this->Page->query("SELECT * from pages as Page where Page.id = '".$pageId."'");
+		$this->set("pageContent", $pageContent);		
+	}
+>>>>>>> develop
 }

@@ -5,7 +5,11 @@
 App::uses('AuthComponent', 'Controller/Component');
 class Webservice extends AppModel {
 	var $name='Webservice';
+<<<<<<< HEAD
 	var $useTable = "admins";
+=======
+	var $useTable = "users";
+>>>>>>> develop
 	
 	public $validate = array(      
 		'email' => array(

@@ -16,7 +16,11 @@
 		  <?php echo $this->Html->link("Dashboard",array('controller'=>'users','action' => 'index'));?><br/>
 		  </li>
 		  <li class="sub">
+<<<<<<< HEAD
 		  <?php echo $this->Html->link( "Add A New User.",   array('action'=>'add'),array('escape' => false) ); ?><br/>
+=======
+		  <?php echo $this->Html->link( "Add A New User",   array('controller'=>'users','action'=>'add'),array('escape' => false) ); ?><br/>
+>>>>>>> develop
           </li>
 		  
 		  <li class="sub">

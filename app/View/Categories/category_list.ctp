@@ -3,9 +3,17 @@
 echo $this->element('common/left_menu');
 ?>
 </div>
+<<<<<<< HEAD
 <div class="row margin-bottom-30">
 <div class="table-responsive">
 <div class="contant-name"><b>Categories:</b></div> <div class="contant-tag"> <?php echo $this->Html->link("Add New Category",   array('action'=>'add') );?> </div><br/>
+=======
+<div class="templatemo-content">
+
+<div class="contant-name"><b>Categories:</b></div> <div class="contant-tag"> <?php echo $this->Html->link("Add New Category",   array('action'=>'add') );?> </div><br/>
+ <div class="row margin-bottom-30">
+            <div class="col-md-12">
+>>>>>>> develop
 <table class="table table-striped table-hover table-bordered">
     <thead>
 		<tr>
@@ -26,6 +34,7 @@ echo $this->element('common/left_menu');
 			<td><?php echo $this->Html->link( $Category['Category']['category_name']  ,   array('action'=>'subcategory_list', $Category['Category']['id']),array('escape' => false) );?></td>
 			<td style="text-align: center;"><?php echo $Category['Category']['description']; ?></td>
 			
+<<<<<<< HEAD
 			<td >
 			<?php echo $this->Html->link(    "Edit",   array('action'=>'edit', $Category['Category']['id']) ); 
 			      echo $this->Html->link(    "Delete", array('action'=>'category_delete', $Category['Category']['id']));
@@ -33,12 +42,37 @@ echo $this->element('common/left_menu');
 			?>  
 		
 			</td>
+=======
+		
+			 
+			<td>
+						<div class="btn-group">
+                          <button type="button" class="btn btn-info">Action</button>
+                          <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                            <li><?php echo $this->Html->link("Edit",array('action' => 'edit', $Category['Category']['id']));?></li>
+                            <li><?php //echo $this->Html->link("Delete",array('action' => '#', $Category['Category']['id'])	,null,'Are you sure you want to delete this category ?');
+							?></li>
+							<li><?php echo $this->Html->link("Add Subcetagary",array('action' => 'add', $Category['Category']['id']));?></li>						
+                          </ul>
+                        </div>
+						</td>
+		
+			
+>>>>>>> develop
 		</tr>
 		<?php endforeach; ?>
 		<?php unset($Category); ?>
 	</tbody>
 </table>
+<<<<<<< HEAD
 </div>	
+=======
+
+>>>>>>> develop
 <ul class="pagination pull-right">
 			  <?php echo $this->Paginator->prev('«',array('tag' => 'li'),null,array('tag' => 'li','class' => 'disabled'));
 					echo $this->Paginator->numbers();
@@ -46,3 +80,8 @@ echo $this->element('common/left_menu');
 					?>			
               </ul>
 </div>
+<<<<<<< HEAD
+=======
+</div>
+</div>	
+>>>>>>> develop

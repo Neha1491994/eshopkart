@@ -23,9 +23,15 @@ class Product extends AppModel {
             'foreignKey' => 'product_id'
         ),
 		
+<<<<<<< HEAD
 		'Product_gallery' => array(
             'className' => 'Product_gallery',
             'foreignKey' => 'products_id'
+=======
+		'Gallery' => array(
+            'className' => 'Gallery',
+            'foreignKey' => 'product_id'
+>>>>>>> develop
         )
 		
     );

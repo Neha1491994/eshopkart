@@ -6,6 +6,11 @@ class Cart_detail extends AppModel {
             'className' => 'Product',
             'foreignKey' => 'product_id'
         )
+<<<<<<< HEAD
+=======
+		
+		
+>>>>>>> develop
 	);
 	
 	

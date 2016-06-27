@@ -39,10 +39,17 @@ class CategoriesController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
+<<<<<<< HEAD
   public function category_list() {
 		$this->Paginator->settings= array(
 		     'conditions' => array('Category.parent_id' => 0),
 			'limit' => 6,
+=======
+public function category_list() {
+		$this->Paginator->settings= array(
+		     'conditions' => array('Category.parent_id' => 0),
+			'limit' => 10,
+>>>>>>> develop
 			'order' => array('Categories.category_name' => 'asc' )
 		);
 		$categorys = $this->Paginator->paginate('Category');
@@ -50,6 +57,7 @@ class CategoriesController extends AppController {
     }
 public function subcategory_list($id = Null) {
 	//pr($id);exit;
+<<<<<<< HEAD
 	//$this->Paginator->settings = $this->paginate;
 	
 		$this->Paginator->settings = array(
@@ -63,13 +71,38 @@ public function subcategory_list($id = Null) {
 		
 		//pr($categorys);exit;
 		
+=======
+	
+		$this->Paginator->settings = array(
+		    'conditions' => array('Category.parent_id' => $id),
+			'limit' => 10,
+		    //'order' => array('Category.category_name' => 'asc' )
+		);
+		$categorys = $this->Paginator->paginate('Category');
+		
+		//pr($categorys);
+		$catrg = $this->Category->find('first',array('conditions' => array('Category.id' => $categorys[0]['Category']['parent_id'])));
+		//pr($catrg['Category']['category_name']);exit;
+			   $this->Session->write("categ",$catrg['Category']['category_name']);
+>>>>>>> develop
 		$this->set(compact('categorys'));
     }
 
     public function add($id = null) {
 		//pr($id);exit;
 		if($id)
+<<<<<<< HEAD
 		{
+=======
+		{     
+	       $category = $this->Category->find('first', array('conditions' => array('Category.id' => $id)));
+		 // pr($category);exit;
+		   //pr($category['category_name']);exit;
+		       if(isset($id)){
+			   $this->Session->write("type",'Subcategory');
+			   $this->Session->write("categ",$category['Category']['category_name']);
+			   }
+>>>>>>> develop
 			   if ($this->request->is('post')){
 				   $postdata=$this->request->data['Category'];
 			     $this->Category->create();
@@ -80,13 +113,22 @@ public function subcategory_list($id = Null) {
 					$this->Category->saveField("parent_id", $id);
 				    }
 				 $this->Session->setFlash(__('The Subcategory has been created'));
+<<<<<<< HEAD
 				 $this->redirect(array('action' => 'category_list'));
+=======
+				 $this->redirect(array('action' => 'subcategory_list',$id));
+>>>>>>> develop
 			    } else {
 				  $this->Session->setFlash(__('The Subcategory could not be created. Please, try again.'));
 			      }	
 			   }
 			
 		}else{
+<<<<<<< HEAD
+=======
+			$this->Session->delete('type');
+			$this->Session->delete('categ');
+>>>>>>> develop
         if ($this->request->is('post')) {
 				
 			$this->Category->create();
@@ -100,6 +142,7 @@ public function subcategory_list($id = Null) {
 	 }
     }
 
+<<<<<<< HEAD
     public function edit($id = null) {
 
 		    if (!$id) {
@@ -118,6 +161,44 @@ public function subcategory_list($id = Null) {
 				if ($this->Category->save($this->request->data)) {
 					$this->Session->setFlash(__('The Category has been updated'));
 					$this->redirect(array('action' => 'edit', $id));
+=======
+    public function edit($id = null,$pid = null) {
+		//pr($pid);exit;
+
+		  
+			$Category = $this->Category->findById($id);
+			
+		    
+			if($id)
+			{  $this->Category->recursive = 0;
+			   $category = $this->Category->find('first', array('conditions' => array('Category.id' => $id)));
+			  //pr($category);exit;
+			   //pr($category['category_name']);exit;
+				   if($category['Category']['parent_id'] != 0){
+				   $this->Session->write("type",'Subcategory');
+				   $this->Session->write("categ",$category['Category']['category_name']);
+			      }
+				  else{
+					$this->Session->write("type",'Category');
+				   $this->Session->write("categ",$category['Category']['category_name']);
+				  }
+			}
+			
+			if ($this->request->is('post') || $this->request->is('put')){
+				//$this->Session->delete('type');
+			    //$this->Session->delete('categ');
+				$this->Category->id = $id;
+				
+				//pr($category);
+				if ($this->Category->save($this->request->data)) {
+					$this->Session->setFlash(__('The Category has been updated'));
+					//pr($category['Category']['parent_id']);exit;
+					if($category['Category']['parent_id'] != 0){
+					$this->redirect(array('action' => 'subcategory_list',$category['Category']['parent_id']));
+					}else{
+						$this->redirect(array('action' => 'category_list'));
+					}
+>>>>>>> develop
 				}else{
 					$this->Session->setFlash(__('Unable to update your Category.'));
 				}

@@ -39,20 +39,34 @@ class EmailConfig {
 
 	public $default = array(
 		'transport' => 'Mail',
+<<<<<<< HEAD
 		'from' => array('nehasaxenaid14@gmail.com' => 'eBoard'),
 		'charset' => 'ISO-8859-1',
 		'replyTo' => array('neha1491994@gmail.com' => 'No-Reply'),
 		'returnPath' => array('info@eboardnow.com' => 'eBoard'),
+=======
+		'from' => array('eshopkartemail@gmail.com' => 'eShopKart'),
+		'charset' => 'ISO-8859-1',
+		'replyTo' => array('neha1491994@gmail.com' => 'No-Reply'),
+		'returnPath' => array('eshopkartemail@gmail.com' => 'eShopKart'),
+>>>>>>> develop
 		//'headerCharset' => 'utf-8',
 	);
 	
 	public $gmail = array(
 		'host' => 'ssl://smtp.gmail.com',
         'port' => 465,
+<<<<<<< HEAD
         'username' => 'infoeshopkart@gmail.com',
         'password' => 'eshopkart123',
         'transport' => 'Smtp',
 		'from' => array('infoeshopkart@gmail.com' => 'eShopKart'),
+=======
+        'username' => 'eshopkartemail@gmail.com',
+        'password' => 'eshopkart123',
+        'transport' => 'Smtp',
+		'from' => array('eshopkartemail@gmail.com' => 'eShopKart'),
+>>>>>>> develop
 	
 	);
 	

@@ -25,7 +25,11 @@ http://www.templatemo.com/preview/templatemo_415_dashboard
 /* 2. General Styles
 --------------------------------------- */
 * { font-family: 'Open Sans', sans-serif; }
+<<<<<<< HEAD
 body { background-color: rgb(235,235,235); }
+=======
+body { background-color: rgb(255,255,255); }
+>>>>>>> develop
 h1 { font-size: 24px; }
 .btn a {
     color: white;
@@ -38,17 +42,31 @@ margin-left:20px}
     color: #294A9A;
     margin: 29px 129px;
 }
+<<<<<<< HEAD
+=======
+.logo1{
+	display: inline-block; 
+margin-left:20px
+	
+}
+>>>>>>> develop
 .contant-name{
 	position: relative;
     
 	font-size:31px;
+<<<<<<< HEAD
 	margin-left:283px;
+=======
+>>>>>>> develop
 }
 .contant-tag{
 	    position: relative;
     float: right;
 	font-size:20px;
+<<<<<<< HEAD
 	margin: -33px 39px;
+=======
+>>>>>>> develop
 }
 .templatemo-content-wrapper {
     float: left;
@@ -64,6 +82,7 @@ margin-left:20px}
 }
 .templatemo-footer {
     clear: both;
+<<<<<<< HEAD
     font-size: 19px;
     padding: 18px 0 5px 0;
     text-align: center;
@@ -74,6 +93,14 @@ margin-left:20px}
 	position:absolute;
 	bottom:0;
 	left:0;
+=======
+    font-size: 15px;
+    padding: 8px 0 3px 0;
+    text-align: center;
+    color: #FFF;
+    background-color: #428BC3;
+	
+>>>>>>> develop
 }
 .margin-bottom-15 { margin-bottom: 15px; }
 .margin-bottom-30 { margin-bottom: 30px; }
@@ -84,11 +111,20 @@ margin-left:20px}
     width: 150px;
     display: inline-block;
 }
+<<<<<<< HEAD
 .navbar {
 	background:url('../img/cake.icon.png') no-repeat left;
     border-radius: 38px;
     margin-right: 23px;
     margin-left: 271px;
+=======
+
+.navbar {
+	background:url('../img/cake.icon.png') no-repeat left;
+    margin-right: 23px;
+    margin-left: 16px;
+    margin-top: 12px;
+>>>>>>> develop
 }
 .navbar-header {
 	color: rgb(127,127,127);
@@ -101,6 +137,10 @@ margin-left:20px}
     list-style: none;
     margin: -28px 0px;
     padding: 0;
+<<<<<<< HEAD
+=======
+	    background-color: #EBEBEB;
+>>>>>>> develop
 }
 .templatemo-sidebar .templatemo-sidebar-menu > li {
     display: block;
@@ -266,6 +306,7 @@ position: relative;
 float:left;
 }
 #ProductAddForm{
+<<<<<<< HEAD
 	    margin: 21px 1030px;
 	    float: right;
 }
@@ -325,3 +366,16 @@ form div.submit {
 	margin-left : 300px;
 	
 }
+=======
+	    
+}
+#UserAddForm {
+    margin: 21px 1138px;
+    float: right;
+}
+
+#CategoryAddForm {
+    
+}
+
+>>>>>>> develop

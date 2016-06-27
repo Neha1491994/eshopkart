@@ -14,10 +14,17 @@ define("ER1010", "This subcategory is not exist");
 define("ER1011", "Successfully added to cart");
 define("ER1012", "Due to some internal error product can't be add to the cart. Please try again ");
 define("ER1013", "sold out");
+<<<<<<< HEAD
 define("ER1014", "Comment added successfully.");
 define("ER1015", "Due to some error comment not added.");
 define("ER1016", "Comment deleted successfully.");
 define("ER1017", "Due to some internal error comment not deleted.");
+=======
+define("ER1014", "Due to internal issue product not found");
+define("ER1015", "Due to some error comment not added.");
+define("ER1016", "Comment deleted successfully.");
+define("ER1017", "Due to some internal order not saved");
+>>>>>>> develop
 define("ER1018", "You are not authorized to delete this comment.");
 define("ER1019", "Memo and related comments deleted successfully.");
 define("ER1020", "You are not authorized to delete this memo.");
