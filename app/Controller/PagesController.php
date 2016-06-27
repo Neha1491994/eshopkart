@@ -43,7 +43,14 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $uses = array();
+	public $uses = array('Page');
+	
+	public function beforeFilter() {
+		$currentController = $this->params['controller'];
+		$currentAction = $this->params['action'];
+	
+			$this->Auth->allow();
+	}	
 
 /**
  * Displays a view

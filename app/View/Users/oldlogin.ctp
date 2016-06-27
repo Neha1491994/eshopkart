@@ -1,5 +1,6 @@
-<div class="templatemo-content">
+<div class="users form">
 <?php echo $this->Session->flash('auth'); ?>
+<div class="template-page-wrapper">
 <?php echo $this->Form->create('User',array('label' => false,'div'=>'','class'=>'form-horizontal templatemo-signin-form')); ?>
     <fieldset>
         <legend><?php echo __('Please enter your username and password'); ?></legend>
@@ -38,6 +39,5 @@
           </div>
         </div>
     </fieldset>
-	
-</div>
+	</div>
 </div>

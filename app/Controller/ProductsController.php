@@ -14,7 +14,7 @@ class ProductsController extends AppController {
 	
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('login','add'); 
+        $this->Auth->allow('login','add', 'subcategory'); 
     }
 	
 
@@ -53,7 +53,7 @@ class ProductsController extends AppController {
 			   $this->Session->write("categ",$subcategory['Category']['category_name']);
 			   }
 			$this->Paginator->settings= array(
-			'conditions' => array('Product.subcategory_id' => $id),
+			'conditions' => array('Product.category_id' => $id),
 			'limit' => 10,
 			'order' => array('Products.product_name' => 'asc' )
 		);	
@@ -71,6 +71,15 @@ class ProductsController extends AppController {
 		
 			
     }
+	
+	public function product_detail($id = Null){
+		if($id){
+			$this->Product->recursive = 1;
+			 $this->request->data = $this->Product->find('first',array('conditions' => array('Product.id' => $id)));
+			//pr($product);exit;
+		}
+		
+	}
 
 	
 	
@@ -87,7 +96,7 @@ class ProductsController extends AppController {
 				)
 			));
 		}
-		//pr($subcategory);exit;
+		//pr($this->request);exit;
 		header('Content-Type: application/json');
 		echo json_encode($subcategory);
 		exit();
@@ -95,6 +104,19 @@ class ProductsController extends AppController {
 
     public function add($id = Null) {
 		
+		/*if($id){
+			$subcategoryid = $this->Product->find('first', array('conditions' => array('Product.id' => $id),'recursive' => 0));
+			//pr($subcategoryid['Category']['parent_id']);exit;
+			
+			$categories = $this->Category->find('list', array(
+			'fields' => array(
+				'id',
+				'category_name',
+				
+			),'conditions'=>array('Category.id' => $subcategoryid['Category']['parent_id']),
+		));
+		//pr($categories);exit;
+		}else{*/
 		      $categories = $this->Category->find('list', array(
 			'fields' => array(
 				'id',
@@ -102,11 +124,13 @@ class ProductsController extends AppController {
 				
 			),'conditions'=>array('Category.parent_id' => 0),
 		));
+		
+		//}
               $this->set('categories',$categories);
 	
 	
 	     $this->Product->create();
-			if ($this->request->is('post')) {
+			if ($this->request->is('post')||$this->request->is('put')) {
 			//pr($this->request->data[]);exit;
 			$postData=$this->data['Product'];
 			//pr($postData);exit;
@@ -160,6 +184,17 @@ class ProductsController extends AppController {
 				$this->Session->setFlash('Unable to add your product.');
 			}	
         }
+		
+		if($id != null){
+			$product = $this->Product->find('first', array('conditions' => array('Product.id' => $id),'recursive' => 0));
+			//$parentcateg = $this->Category->find('first', array('conditions' => array('Category.id' => $product['Category']['parent_id']),'recursive' => 0 ));
+			//pr($product);
+			//pr($parentcateg);exit;
+			//pr(array($product,$parentcateg));exit;
+			//$this->request->data = array($product,$parentcateg);
+			$this->request->data =$product; 
+			
+		}
     }
 
     public function edit($id = null) {
@@ -190,24 +225,15 @@ class ProductsController extends AppController {
 			}
     }
 
-    public function delete($id = null) {
-		
-		if (!$id) {
-			$this->Session->setFlash('Please provide a product id');
-			$this->redirect(array('action'=>'index'));
-		}
-		
-        $this->User->id = $id;
-        if (!$this->User->exists()) {
-            $this->Session->setFlash('Invalid product id provided');
-			$this->redirect(array('action'=>'list'));
-        }
-        if ($this->User->saveField('status', 0)) {
-            $this->Session->setFlash(__('Product deleted'));
-            $this->redirect(array('action' => 'list'));
-        }
+     public function product_delete($id = null) {
+//pr($id);exit;
+    if ($this->Product->delete($id)) {
+        $this->Session->setFlash(__('Product deleted'));
+    } else {
         $this->Session->setFlash(__('Product was not deleted'));
-        $this->redirect(array('action' => 'list'));
+    }
+
+    return $this->redirect(array('action' => 'product_list'));
     }
 	
 	

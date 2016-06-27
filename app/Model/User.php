@@ -30,9 +30,9 @@ class User extends AppModel {
 			)	
 		),
 		
-        'birthday' => array(
-            'rule' => 'date',
-            'message' => 'Enter a valid date',
+        'mobile' => array(
+            'rule' => 'number',
+            'message' => 'Enter a valid number',
             'allowEmpty' => true
         )
     );

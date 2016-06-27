@@ -196,32 +196,39 @@ class WebservicesController extends AppController {
 	public function forgetpassword() {
 		$json_return = array();
 		$email = $this->request->data['email'];
-		$newpassword = $this->request->data['password'];
-		if($email == ""){
-				$json_return['code'] = "1006";
-				//$json_return['message'] = ER1042;
-			    $json_return['message'] = "Invalid email";			
-		}else{
-				$find_user = array();
-				$find_user = $this->User->find("first", array("conditions" => array("User.email" => $email)));
-				//pr($find_user);
-					if($find_user){
-						//$find_user['User']['id'];
-						$this->User->id = $find_user['User']['id'];
-						$this->User->saveField("password",$newpassword);
-						$json_return['message'] = "password change successfully";
-						$json_return['code'] = "1000";
-						echo json_encode($find_user);
-						exit;
-						//$json_return['message'] = ER1000;
-					}else{
-						$json_return['code'] = "1003";
-						$json_return['message'] = "internal error";
-						//$json_return['message'] = ER1003;
-						echo json_encode($json_return);
-						exit;
-				    }
-		}		   
+		$password = $this->request->data['password'];
+			if($email == ""){
+					$json_return['code'] = "1006";
+					//$json_return['message'] = ER1042;
+					$json_return['message'] = "Invalid email";			
+			}else{
+					$find_user = array();
+					$find_user = $this->User->find("first", array("conditions" => array("User.email" => $email)));
+					//pr($find_user);
+						if($find_user){
+							//$find_user['User']['id'];
+							$this->User->set($this->request->data);
+							if($this->User->validates(array('fieldList' => array('password')))){
+								$this->User->id = $find_user['User']['id'];
+								$this->User->saveField("password",$password);
+								$json_return['message'] = "password change successfully";
+								$json_return['code'] = "1000";
+								echo json_encode($find_user);
+								exit;
+							}else{
+								$json_return['code'] = "1003";
+								$json_return['message'] = "password should be 6 character long";
+								echo json_encode($json_return);
+								exit;
+							}
+						}else{
+							$json_return['code'] = "1003";
+							$json_return['message'] = "internal error";
+							//$json_return['message'] = ER1003;
+							echo json_encode($json_return);
+							exit;
+						}
+			}		   
 		echo json_encode($json_return);
 		exit;
 	}
@@ -369,6 +376,39 @@ class WebservicesController extends AppController {
 		}
 	}
 	
+	public function get_product_details(){
+		$json_return = array();		
+		if ($this->request->is('post') || $this->request->is('put')) {
+			 $product_id = $this->request->data['product_id'];
+			 $Product = $this->Product->find('first',array("conditions" =>array('Product.id'=>$product_id)));
+				if($Product)
+				{
+					//pr($product);exit;
+					$subcate = array();
+					$subcate['id'] =  $Product['Product']['id'];
+                    $subcate['colour'] =  $Product['Product']['colour'];
+                    $subcate['price'] =  $Product['Product']['unitprice'];
+                    $subcate['name'] =  $Product['Product']['product_name'];
+                    $subcate['status'] = $Product['Product']['status'];
+                    $subcate['product_description'] = $Product['Product']['product_description'];
+                    $subcate['Gallery'] =$Product['Gallery']; 
+					echo json_encode($subcate); 
+					exit;
+				}else{
+					$json_return['message'] = "Product not found";
+					$json_return['code'] = "1010"; 
+					echo json_encode($json_return);
+					exit;
+				}
+		}else{
+				$json_return['message'] = "invalid data";
+				$json_return['code'] = "1002";
+				//$json_return['message'] = ER1002;
+				echo json_encode($json_return);
+				exit;
+		}
+	}
+	
 	public function add_to_cart(){
 		$json_return = array();		
 		if ($this->request->is('post') || $this->request->is('put')) 
@@ -379,54 +419,54 @@ class WebservicesController extends AppController {
 			$this->Product->recursive = 1;
 			$product = $this->Product->find("first",array("conditions"=>array("Product.id"=>$id)));
 			//pr($product);exit;
-			$carddetail = $this->Cart_detail->find("all",array("conditions"=>array("Cart_detail.product_id"=>$id, "Cart_detail.user_id"=>$user_id)));
+			$carddetail = $this->Cart_detail->find("first",array("conditions"=>array("Cart_detail.product_id"=>$id, "Cart_detail.user_id"=>$user_id)));
 			$totalunitsinstock = $product['Product']['unitsinstock'];
 			$totalunitsonorder = $product['Product']['unitsonorder'];
-			//pr($product);exit;
-			if($carddetail){
-			        //pr("This product is available in your cart");
-					exit;
-			}else{
-					if($quantity <=  $totalunitsinstock){
+			//pr($carddetail);exit;
+			if($quantity <=  $totalunitsinstock){
+				if($carddetail){
+						$json_return['message'] = "quantity increase sucessfully";
+						$json_return['code'] = "1002";
+						$quantity_incart = $carddetail['Cart_detail']['quantity'] + $quantity;
+						$this->Cart_detail->query("UPDATE cart_details set quantity = '".$quantity_incart."' where user_id = '".$user_id."' and product_id = '".$id."'");
+						echo json_encode($json_return);	    
+				}else{
+					
 						$this->Cart_detail->set($this->request->data);
 						$this->request->data['Cart_detail']['user_id'] = $user_id;
 						$this->request->data['Cart_detail']['product_id'] = $id;
 						$this->request->data['Cart_detail']['quantity'] = $quantity;
-						$remaining_quantity = $totalunitsinstock - $quantity;
-						$order_quantity =  $totalunitsonorder + $quantity;
-						//$this->Product->saveField("unitsinstock", $remaining_quntity);
-						$this->Product->query("UPDATE products set unitsinstock = '".$remaining_quantity."', unitsonorder = '".$order_quantity."' where id = '".$id."'");
 						if($this->Cart_detail->save($this->request->data)){	
-							$json_return['message'] = "Successfully added to cart";
-							$json_return['code'] = "1011";
-							//$json_return['message'Cart_detail] = ER1011;
-							$lastInsertedId = $this->Cart_detail->id;
-							//pr($lastInsertedId);exit;
-							$carddetail = $this->Cart_detail->find("first",array("conditions"=>array("Cart_detail.id"=>$lastInsertedId)));
-							echo json_encode($carddetail);
-							exit;
+								$json_return['message'] = "Successfully added to cart";
+								$json_return['code'] = "1011";
+								//$json_return['mesage'Cart_detail] = ER1011;
+								echo json_encode($json_return);
 						}else{
-							$json_return['message'] = "invalid data";
-							$json_return['code'] = "1002";
-							//$json_return['message'] = ER1002;
-							echo json_encode($json_return);
-							exit;
-						}	
-					}else{
-							$json_return['code'] = "1013";
-							$json_return['message'] = "out of stock ";
-							echo json_encode($json_return);
-							exit;
-					}
-			}
-			//pr($product);exit;	
+								$json_return['message'] = "invalid data";
+								$json_return['code'] = "1002";
+								//$json_return['message'] = ER1002;
+								echo json_encode($json_return);
+								exit;
+						}
+						
+				}	
+					$remaining_quantity = $totalunitsinstock - $quantity;
+					$order_quantity =  $totalunitsonorder + $quantity;
+					$this->Product->query("UPDATE products set unitsinstock = '".$remaining_quantity."', unitsonorder = '".$order_quantity."' where id = '".$id."'");
+					exit;				
+			}else{
+				$json_return['code'] = "1013";
+				$json_return['message'] = "out of stock ";
+				echo json_encode($json_return);
+				exit;
+			}	
 		}else{
-			      $json_return['message'] = "invalid request";
-			      $json_return['code'] = "1002";
-			     //$json_return['message'] = ER1002;
-			      echo json_encode($json_return);
-			      exit;
-		     }
+			    $json_return['message'] = "invalid request";
+			    $json_return['code'] = "1002";
+			  //$json_return['message'] = ER1002;
+			    echo json_encode($json_return);
+			    exit;
+		}
 	}
 	
 	public function view_cart(){
@@ -434,35 +474,32 @@ class WebservicesController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) 
 		{
 			$user_id = $this->request->data['user_id'];
+			$this->Cart_detail->recursive = 2;
 		    $carddetail = $this->Cart_detail->find("all",array("conditions" => array("Cart_detail.user_id" => $user_id)));
 			//pr($carddetail);exit;
-			$id = array();
-			$i = 0;
-			//pr($card);exit;	
-			foreach($carddetail as $card){
-				$id[$i] = $card['Product']['id'];
-				$i++;
-			}
-			//pr($id);exit;
-            $product = $this->Product->find("all",array("conditions" => array("Product.id"=>$id)));
-			//pr($product);exit;
 			$data = array();
 			$i = 0;
-			foreach($product as $prod){
-				if(isset($prod['Gallery'][0])){
-					$img = $prod['Gallery'][0]['images'];
+			foreach($carddetail as $prod){
+				//pr($prod);exit;
+				if(isset($prod['Product']['Gallery'][0])){
+					$img = $prod['Product']['Gallery'][0]['images'];
 				}else{
 					$img = "";	
 				}
-				$data[$i]['name'] = $prod['Product']['product_name'];
-				$data[$i]['quantity'] = $carddetail[$i]['Cart_detail']['quantity'];
-				$data[$i]['image'] =  $img;
-				$i++;
+					$data[$i]['id'] = $prod['Product']['id'];
+					$data[$i]['name'] = $prod['Product']['product_name'];
+					$data[$i]['product_number'] = $prod['Product']['product_number'];
+					$data[$i]['description'] = $prod['Product']['product_description'];
+					$data[$i]['colour'] = $prod['Product']['colour'];
+					$data[$i]['unitprice'] = $prod['Product']['unitprice'];
+					$data[$i]['status'] = $prod['Product']['status'];
+					$data[$i]['quantity'] = $prod['Cart_detail']['quantity'];
+					$data[$i]['image'] =  $img;
+					$i++;
 			}
 			//pr($data);exit;
 			echo json_encode($data); 
-			exit;
-			
+			exit;	
 		}else{
 			      $json_return['message'] = "invalid request";
 			      $json_return['code'] = "1002";
@@ -476,16 +513,34 @@ class WebservicesController extends AppController {
 		$json_return = array();		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$user_id = $this->request->data['user_id'];
-			$product_id = $this->request->data['product_id'];
-			if($this->request->data){
-				$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."' AND product_id = '".$product_id."'");
-				$json_return['msg'] = "success";
-			    $json_return['code'] = "1000";
-			   //$json_return['message'] = ER1000;
-			    echo json_encode($json_return);
-			    exit;
+			$carddetail = $this->Cart_detail->find("all",array("conditions" => array("Cart_detail.user_id" => $user_id)));
+			if($carddetail){
+					if(isset($this->request->data['product_id']) && $this->request->data['product_id'] != ""){
+							$product_id = $this->request->data['product_id'];
+							$carddetail = $this->Cart_detail->find("first",array("conditions" => array("Cart_detail.user_id" => $user_id,"Cart_detail.product_id" => $product_id)));
+							$quantity = $carddetail['Cart_detail']['quantity'];
+							$unitinstock = $carddetail['Product']['unitsinstock'] + $quantity; 
+							$unitonorder = $carddetail['Product']['unitsonorder'] - $quantity;
+							$this->Product->query("UPDATE products set unitsinstock = '".$unitinstock."', unitsonorder = '".$unitonorder."' where id = '".$product_id."'");
+							$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."' AND product_id = '".$product_id."'");
+					}else{
+								
+							foreach($carddetail as $card){
+									$product_id = $card['Product']['id'];
+									$quantity = $card['Cart_detail']['quantity'];
+									$unitinstock = $card['Product']['unitsinstock'] + $quantity; 
+									$unitonorder = $card['Product']['unitsonorder'] - $quantity;
+								    $this->Product->query("UPDATE products set unitsinstock = '".$unitinstock."', unitsonorder = '".$unitonorder."' where id = '".$product_id."'");	
+							}
+							$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."'");
+					}
+					$json_return['message'] = "you have successfully clear your cart";
+					$json_return['code'] = "1000";
+					//$json_return['message'] = ER1000;
+					echo json_encode($json_return);
+					exit;
 			}else{
-				$json_return['message'] = "invalid data";
+				$json_return['message'] = "You have no product in your cart";
 			    $json_return['code'] = "1002";
 			    //$json_return['message'] = ER1002;
 			    echo json_encode($json_return);
@@ -504,65 +559,94 @@ class WebservicesController extends AppController {
 		$json_return = array();		
 		if ($this->request->is('post') || $this->request->is('put')) 
 		{
-			$user_id = $this->request->data['user_id'];
-			$carddetail = $this->Cart_detail->find("all",array("conditions" => array("Cart_detail.user_id" => $user_id)));
-			//pr($carddetail);
-			$ordernumber = md5($user_id.time());
-			$data = array();
-			$pid = array();
-			$i= 0;
-			foreach($carddetail as $card){
-				//pr($card);
-				$product_id[$i] = $card['Cart_detail']['product_id'];
-				$data['Order']['user_id'] = $card['Cart_detail']['user_id'];
-				$data['Order']['status'] = "Pending";
-				$data['Order']['ordernumber'] = $ordernumber;
-				$i++;
-			}	
-			//pr($product_id);exit;
-			if($this->Order->saveAll($data)){
-				$json_return['msg'] = "Request successfull";
-			    $json_return['code'] = "1000";
-			    //echo json_encode($json_return);
-				$order= $this->Order->find("first",array("conditions" => array("Order.ordernumber" =>$ordernumber)));
-			    //pr($order);exit;
-			    $this->Product->recursive = 1;
-				$Product= $this->Product->find("all",array("conditions" => array("Product.id" => $product_id)));
-				//pr($Product);exit;
-				$orderdetail = array();
-				$i=0;$k=0;
-				foreach($Product as $prod){
-					$orderdetail[$i]['Orderdetail']['order_id'] = $order['Order']['id'];
-					$orderdetail[$i]['Orderdetail']['product_id'] = $prod['Product']['id'];
-					$cardunitsinstock = $this->Cart_detail->find("first",array("conditions" => array("Cart_detail.user_id" => $user_id,"Cart_detail.product_id" =>$prod['Product']['id'])));
-					//pr($cardunitsinstock['Cart_detail']['unitsinstock']);
-					$orderdetail[$i]['Orderdetail']['quantity'] =$cardunitsinstock['Cart_detail']['quantity'] ;
-					$i++;
-				}
-				
-				//pr($orderdetail);exit;
-				if($this->Orderdetail->saveAll($orderdetail)){
-					$json_return['msg'] = "successfully placed order";
+				$token_id = $this->request->data['token_id'];
+				$userDetail = $this->User->find("first", array("conditions" => array("User.token_id" => $token_id)));
+				$user_id = $userDetail['User']['id'];
+				//$ordernumber = md5($user_id.time());
+				$ordernumber = mt_rand(10000000,99999999);
+			if(isset($this->request->data['product_id']) && $this->request->data['product_id'] != ""){
+					$product_id = $this->request->data['product_id'];
+					$prod = $this->Product->find("first",array("conditions" => array("Product.id" => $product_id)));
+					$totalunitsinstock = $prod['Product']['unitsinstock'];
+					//pr($prod);
+					if($prod['Product']['unitsinstock']>0){
+							$data['Order']['user_id'] = $user_id;
+							$data['Order']['status'] = "Pending";
+							$data['Order']['ordernumber'] = $ordernumber;
+							//pr($data);
+							if($this->Order->saveAll($data)){
+									$json_return['msg'] = "Request successfull";
+									$json_return['code'] = "1000";
+									$order= $this->Order->find("first",array("conditions" => array("Order.ordernumber" =>$ordernumber)));
+									$orderdetail['Orderdetail']['order_id'] = $order['Order']['id'];
+									$orderdetail['Orderdetail']['product_id'] = $prod['Product']['id'];
+									$orderdetail['Orderdetail']['quantity'] =1;
+									//pr($orderdetail);exit;
+									$unitinstock = $prod['Product']['unitsinstock'] - 1; 
+									$unitonorder = $prod['Product']['unitsonorder'] + 1;
+									//pr($product_id);exit;
+									$this->Product->query("UPDATE products set unitsinstock = '".$unitinstock."', unitsonorder = '".$unitonorder."' where id = '".$product_id."'");
+							}
+					}else{
+							$json_return['code'] = "1013";
+							$json_return['msg'] = "out of stock ";
+							echo json_encode($json_return);
+							exit;
+					}
+			}else{
+					$carddetail = $this->Cart_detail->find("all",array("conditions" => array("Cart_detail.user_id" => $user_id)));
+					//pr($carddetail);exit;
+					$data = array();
+					$product_id = array();
+					$i= 0;
+					foreach($carddetail as $card){
+							//pr($card);
+							$product_id[$i] = $card['Cart_detail']['product_id'];
+							$data['Order']['user_id'] = $card['Cart_detail']['user_id'];
+							$data['Order']['status'] = "Pending";
+							$data['Order']['ordernumber'] = $ordernumber;
+							$i++;
+					}	
+					//pr($product_id);
+					if($this->Order->saveAll($data)){
+							$order= $this->Order->find("first",array("conditions" => array("Order.ordernumber" =>$ordernumber)));
+							$this->Product->recursive = 1;
+							$Product= $this->Product->find("all",array("conditions" => array("Product.id" => $product_id)));
+							$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."'");
+							//pr($Product);exit;
+							$orderdetail = array();
+							$i=0;$k=0;
+							foreach($Product as $prod){
+							$orderdetail[$i]['Orderdetail']['order_id'] = $order['Order']['id'];
+							$orderdetail[$i]['Orderdetail']['product_id'] = $prod['Product']['id'];
+							$card_quantity = $this->Cart_detail->find("first",array("conditions" => array("Cart_detail.user_id" => $user_id,"Cart_detail.product_id" =>$prod['Product']['id'])));
+							//pr($cardunitsinstock);exit;
+							$orderdetail[$i]['Orderdetail']['quantity'] =$card_quantity['Cart_detail']['quantity'] ;
+							$i++;
+							}
+					}else{
+							$json_return['msg'] = "due to some internal error request not send";
+							$json_return['code'] = "1017";
+							//$json_return['message'] = ER1017;
+							echo json_encode($json_return);
+							exit;
+					}
+			}															
+			if($this->Orderdetail->saveAll($orderdetail)){
+					$json_return['msg'] = "Request is send successfully Please check your mail for get code";
 					$json_return['code'] = "1000";
 					echo json_encode($json_return);
-					$this->Cart_detail->query("DELETE FROM cart_details WHERE user_id = '".$user_id."'");
+					$this->sendMail($userDetail['User']['email'],'Request delievery mail', 'request_for_code', array('title_for_layout' =>'Request_for_code delievery mail',"ordernumber"=>$ordernumber));
 					exit;
-				}else{
-					$json_return['message'] = "internal error";
+			}else{
+					$json_return['msg'] = "internal error";
 					$json_return['code'] = "1017";
 					//$json_return['message'] = ER1017;
 					echo json_encode($json_return);
 					exit;
-			    }    
-			}else{
-				$json_return['message'] = "due to some internal error order not done";
-				$json_return['code'] = "1017";
-				//$json_return['message'] = ER1017;
-				echo json_encode($json_return);
-				exit;
-			}
+			}    
 		}else{
-			$json_return['message'] = "invalid request";
+			$json_return['msg'] = "invalid request";
 			$json_return['code'] = "1002";
 			//$json_return['message'] = ER1002;
 			echo json_encode($json_return);
@@ -575,15 +659,29 @@ class WebservicesController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) 
 		{	
 	        $keyword = $this->request->data('keyword');
-			$data = array();
-			$data[0] = $this->Product->query("SELECT * FROM products WHERE product_name LIKE '".$keyword."%' OR product_description LIKE '%".$keyword." ! %' ESCAPE '!'");
-			$data[1] = $this->Category->query("SELECT * FROM categories WHERE category_name LIKE '".$keyword."%' OR description LIKE '%".$keyword." ! %' ESCAPE '!'");
-			if($data){
-				echo json_encode($data);
-				exit;
+			$search = $this->Product->query("SELECT * FROM products WHERE product_name LIKE '".$keyword."%' OR product_description LIKE '%".$keyword."%'");
+			//$search[1] = $this->Category->query("SELECT * FROM categories WHERE category_name LIKE '".$keyword."%' OR description LIKE '%".$keyword." ! %' ESCAPE '!'");
+			//pr($search);exit;
+			if($search){
+						$subcate = array();
+						$i = 0;
+						foreach($search as $Product){	
+						//pr($product);exit;
+											   $subcate[$i]['id'] =  $Product['products']['id'];
+											  //$subcate[$i]['category_id'] =  $Product['products']['category_id'];
+											   $subcate[$i]['name'] =  $Product['products']['product_name'];
+                                               //$subcate[$i]['colour'] =  $Product['products']['colour'];
+                                               //$subcate[$i]['price'] =  $Product['products']['unitprice'];
+                                               //$subcate[$i]['status'] = $Product['products']['status'];
+                                               //$subcate[$i]['product_description'] = $Product['products']['product_description'];
+						$i++;
+						}
+						//pr($subcate);exit;
+						echo json_encode($subcate);
+						exit;
 			}
 			else{
-				$json_return['message'] = "internal error";
+				$json_return['message'] = "product not found due to some error";
 				$json_return['code'] = "1014";
 				//$json_return['message'] = ER1014;
 				echo json_encode($json_return);
@@ -597,8 +695,5 @@ class WebservicesController extends AppController {
 			exit;
 		}		
     }
-	
-	
-	
 }
 

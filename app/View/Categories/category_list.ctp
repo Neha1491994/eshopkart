@@ -3,9 +3,11 @@
 echo $this->element('common/left_menu');
 ?>
 </div>
-<div class="row margin-bottom-30">
-<div class="table-responsive">
+<div class="templatemo-content">
+
 <div class="contant-name"><b>Categories:</b></div> <div class="contant-tag"> <?php echo $this->Html->link("Add New Category",   array('action'=>'add') );?> </div><br/>
+ <div class="row margin-bottom-30">
+            <div class="col-md-12">
 <table class="table table-striped table-hover table-bordered">
     <thead>
 		<tr>
@@ -37,7 +39,8 @@ echo $this->element('common/left_menu');
                           </button>
                           <ul class="dropdown-menu" role="menu">
                             <li><?php echo $this->Html->link("Edit",array('action' => 'edit', $Category['Category']['id']));?></li>
-                            <li><?php echo $this->Html->link("Delete",array('action' => 'category_delete', $Category['Category']['id']),null,'Are you sure you want to delete this category ?');?></li>
+                            <li><?php //echo $this->Html->link("Delete",array('action' => '#', $Category['Category']['id'])	,null,'Are you sure you want to delete this category ?');
+							?></li>
 							<li><?php echo $this->Html->link("Add Subcetagary",array('action' => 'add', $Category['Category']['id']));?></li>						
                           </ul>
                         </div>
@@ -49,7 +52,7 @@ echo $this->element('common/left_menu');
 		<?php unset($Category); ?>
 	</tbody>
 </table>
-</div>	
+
 <ul class="pagination pull-right">
 			  <?php echo $this->Paginator->prev('«',array('tag' => 'li'),null,array('tag' => 'li','class' => 'disabled'));
 					echo $this->Paginator->numbers();
@@ -57,3 +60,5 @@ echo $this->element('common/left_menu');
 					?>			
               </ul>
 </div>
+</div>
+</div>	

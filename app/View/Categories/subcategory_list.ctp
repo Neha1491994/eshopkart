@@ -3,9 +3,11 @@
 echo $this->element('common/left_menu');
 ?>
 </div>
-<div class="row margin-bottom-30">
-<div class="table-responsive">
-<div class="contant-name"><b>Subcategories:</b></div>
+<div class="templatemo-content">
+ <div class="row margin-bottom-30">
+            <div class="col-md-12">
+<div class="contant-name"><b>Subcategories :<?php echo $this->Session->read('categ');?></b></div>
+
 <table class="table table-striped table-hover table-bordered">
     <thead>
 		<tr>
@@ -46,7 +48,7 @@ echo $this->element('common/left_menu');
 		<?php unset($Category); ?>
 	</tbody>
 </table>
-</div>	
+
 <ul class="pagination pull-right">
 			  <?php echo $this->Paginator->prev('«',array('tag' => 'li'),null,array('tag' => 'li','class' => 'disabled'));
 					echo $this->Paginator->numbers();
@@ -54,4 +56,7 @@ echo $this->element('common/left_menu');
 					?>			
               </ul>
 
+</div>
+
+</div>
 </div>

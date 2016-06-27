@@ -6,6 +6,8 @@ class Cart_detail extends AppModel {
             'className' => 'Product',
             'foreignKey' => 'product_id'
         )
+		
+		
 	);
 	
 	

@@ -47,13 +47,11 @@ margin-left:20px
 	position: relative;
     
 	font-size:31px;
-	margin-left:283px;
 }
 .contant-tag{
 	    position: relative;
     float: right;
 	font-size:20px;
-	margin: -33px 39px;
 }
 .templatemo-content-wrapper {
     float: left;
@@ -69,15 +67,11 @@ margin-left:20px
 }
 .templatemo-footer {
     clear: both;
-    font-size: 19px;
-    padding: 18px 0 5px 0;
+    font-size: 15px;
+    padding: 8px 0 3px 0;
     text-align: center;
     color: #FFF;
     background-color: #428BC3;
-	width:100%;
-	height:54px;
-	position:fixed;
-	bottom:0;
 	
 }
 .margin-bottom-15 { margin-bottom: 15px; }
@@ -273,8 +267,7 @@ position: relative;
 float:left;
 }
 #ProductAddForm{
-	    margin: 21px 1030px;
-	float: right;
+	    
 }
 #UserAddForm {
     margin: 21px 1138px;
@@ -282,9 +275,6 @@ float:left;
 }
 
 #CategoryAddForm {
-    margin: 21px 1069px;
-    float: right;
+    
 }
-#UserLoginForm{
-	margin: 36px 581px;
-}
+

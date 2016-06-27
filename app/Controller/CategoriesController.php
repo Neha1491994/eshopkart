@@ -39,7 +39,7 @@ class CategoriesController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
-  public function category_list() {
+public function category_list() {
 		$this->Paginator->settings= array(
 		     'conditions' => array('Category.parent_id' => 0),
 			'limit' => 10,
@@ -50,7 +50,6 @@ class CategoriesController extends AppController {
     }
 public function subcategory_list($id = Null) {
 	//pr($id);exit;
-	//$this->Paginator->settings = $this->paginate;
 	
 		$this->Paginator->settings = array(
 		    'conditions' => array('Category.parent_id' => $id),
@@ -58,11 +57,11 @@ public function subcategory_list($id = Null) {
 		    //'order' => array('Category.category_name' => 'asc' )
 		);
 		$categorys = $this->Paginator->paginate('Category');
-		//$this->Paginator->settings = array("conditions" => array('Category.parent_id' => $id));
-		//$categorys = $this->paginate('category');
 		
-		//pr($categorys);exit;
-		
+		//pr($categorys);
+		$catrg = $this->Category->find('first',array('conditions' => array('Category.id' => $categorys[0]['Category']['parent_id'])));
+		//pr($catrg['Category']['category_name']);exit;
+			   $this->Session->write("categ",$catrg['Category']['category_name']);
 		$this->set(compact('categorys'));
     }
 
@@ -87,7 +86,7 @@ public function subcategory_list($id = Null) {
 					$this->Category->saveField("parent_id", $id);
 				    }
 				 $this->Session->setFlash(__('The Subcategory has been created'));
-				 $this->redirect(array('action' => 'category_list'));
+				 $this->redirect(array('action' => 'subcategory_list',$id));
 			    } else {
 				  $this->Session->setFlash(__('The Subcategory could not be created. Please, try again.'));
 			      }	
@@ -109,24 +108,42 @@ public function subcategory_list($id = Null) {
 	 }
     }
 
-    public function edit($id = null) {
+    public function edit($id = null,$pid = null) {
+		//pr($pid);exit;
 
-		    if (!$id) {
-				$this->Session->setFlash('Please provide a category id');
-				$this->redirect(array('action'=>'category_list'));
-			}
-
+		  
 			$Category = $this->Category->findById($id);
-			if (!$Category) {
-				$this->Session->setFlash('Invalid Category ID Provided');
-				$this->redirect(array('action'=>'category_list'));
+			
+		    
+			if($id)
+			{  $this->Category->recursive = 0;
+			   $category = $this->Category->find('first', array('conditions' => array('Category.id' => $id)));
+			  //pr($category);exit;
+			   //pr($category['category_name']);exit;
+				   if($category['Category']['parent_id'] != 0){
+				   $this->Session->write("type",'Subcategory');
+				   $this->Session->write("categ",$category['Category']['category_name']);
+			      }
+				  else{
+					$this->Session->write("type",'Category');
+				   $this->Session->write("categ",$category['Category']['category_name']);
+				  }
 			}
-
+			
 			if ($this->request->is('post') || $this->request->is('put')){
+				//$this->Session->delete('type');
+			    //$this->Session->delete('categ');
 				$this->Category->id = $id;
+				
+				//pr($category);
 				if ($this->Category->save($this->request->data)) {
 					$this->Session->setFlash(__('The Category has been updated'));
-					$this->redirect(array('action' => 'edit', $id));
+					//pr($category['Category']['parent_id']);exit;
+					if($category['Category']['parent_id'] != 0){
+					$this->redirect(array('action' => 'subcategory_list',$category['Category']['parent_id']));
+					}else{
+						$this->redirect(array('action' => 'category_list'));
+					}
 				}else{
 					$this->Session->setFlash(__('Unable to update your Category.'));
 				}
